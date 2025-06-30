@@ -1,5 +1,6 @@
 ﻿using System;
 using ABCLib4cs;
+using ABCLib4cs.IO;
 using ABCLib4cs.Models;
 using static System.Console;
 using static System.Math;
@@ -15,6 +16,7 @@ namespace SubmissionCodes
             object nestedObj = new Class1.NestedClass.InnerNestedClass();
             var val = Class1.NestedClass.NestedConstant;
             WriteLine(val);
+            var scanner = new StreamScanner(Console.OpenStandardOutput());
         }
     }
 }

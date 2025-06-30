@@ -1,4 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SubmissionCodes
 {
@@ -10,6 +15,7 @@ namespace SubmissionCodes
             object nestedObj = new ABCLib4cs.Class1.NestedClass.InnerNestedClass();
             var val = ABCLib4cs.Class1.NestedClass.NestedConstant;
             System.Console.WriteLine(val);
+            ABCLib4cs.IO.StreamScanner scanner = new ABCLib4cs.IO.StreamScanner(Console.OpenStandardOutput());
         }
     }
 }
@@ -82,6 +88,94 @@ namespace ABCLib4cs
             public override string ToString()
             {
                 return $"{Title} with a salary of {Salary:C}";
+            }
+        }
+    }
+
+    namespace IO
+    {
+        public class StreamScanner
+        {
+            public StreamScanner(Stream stream)
+            {
+                str = stream;
+            }
+
+            private readonly Stream str;
+            private readonly byte[] buf = new byte[1024];
+            private int len, ptr;
+            public bool isEof = false;
+            public bool IsEndOfStream
+            {
+                get
+                {
+                    return isEof;
+                }
+            }
+
+            private byte read()
+            {
+                if (isEof)
+                    throw new EndOfStreamException();
+                if (ptr >= len)
+                {
+                    ptr = 0;
+                    if ((len = str.Read(buf, 0, 1024)) <= 0)
+                    {
+                        isEof = true;
+                        return 0;
+                    }
+                }
+
+                return buf[ptr++];
+            }
+
+            public char Char()
+            {
+                byte b = 0;
+                do b = read();
+                while (b < 33 || 126 < b);
+                return (char)b;
+            }
+
+            public string Scan()
+            {
+                var sb = new StringBuilder();
+                for (var b = Char(); b >= 33 && b <= 126; b = (char)read())
+                    sb.Append(b);
+                return sb.ToString();
+            }
+
+            public long Long()
+            {
+                long ret = 0;
+                byte b = 0;
+                var ng = false;
+                do b = read();
+                while (b != '-' && (b < '0' || '9' < b));
+                if (b == '-')
+                {
+                    ng = true;
+                    b = read();
+                }
+
+                for (; true; b = read())
+                {
+                    if (b < '0' || '9' < b)
+                        return ng ? -ret : ret;
+                    else
+                        ret = ret * 10 + b - '0';
+                }
+            }
+
+            public int Integer()
+            {
+                return (int)Long();
+            }
+
+            public double Double()
+            {
+                return double.Parse(Scan(), CultureInfo.InvariantCulture);
             }
         }
     }

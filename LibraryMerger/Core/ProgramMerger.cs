@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace LibraryMerger.Core
         private SyntaxList<MemberDeclarationSyntax> _members = new SyntaxList<MemberDeclarationSyntax>();
 
         private Queue<CompilationUnitSyntax> queue = new Queue<CompilationUnitSyntax>(256);
-        private SortedSet<CompilationUnitSyntax> cuset = new SortedSet<CompilationUnitSyntax>();
+        private SortedSet<CompilationUnitSyntax> cuset = new SortedSet<CompilationUnitSyntax>(new CompilationUnitSyntaxComparer());
 
         public async Task<CompilationUnitSyntax?> MergeLibrariesFor(string mainClassFQN)
         {
@@ -102,6 +103,7 @@ namespace LibraryMerger.Core
             if (queue.Count == 0) return;
             SyntaxNode root = queue.Dequeue();
             Console.WriteLine($"Merging {root.SyntaxTree.FilePath}");
+            SyntaxTreeVisualizer.Visualize(root);
             // 1. Collect type symbols
             var collector = new TypeSymbolCollector(_compilation.GetSemanticModel(root.SyntaxTree));
             ApplyWalker(root, collector);

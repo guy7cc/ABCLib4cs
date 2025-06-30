@@ -57,7 +57,7 @@ public class FullyQualifyStaticMembersRewriter : CSharpSyntaxRewriter
     {
         if (node.Expression is not IdentifierNameSyntax) return base.VisitMemberAccessExpression(node);
 
-        var symbolInfo = _semanticModel.GetSymbolInfo(node);
+        var symbolInfo = _semanticModel.GetSymbolInfo(node.Expression);
         var symbol = symbolInfo.Symbol;
         // シンボルが静的なメンバーであるかチェック
         if (IsStaticMemberOf(symbol, _types))

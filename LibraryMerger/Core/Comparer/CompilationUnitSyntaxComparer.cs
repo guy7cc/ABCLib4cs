@@ -8,9 +8,6 @@ using System.Collections.Generic;
 /// </summary>
 public class CompilationUnitSyntaxComparer : IComparer<CompilationUnitSyntax>
 {
-    // シングルトンインスタンスを提供すると便利です
-    public static readonly CompilationUnitSyntaxComparer Instance = new();
-
     public int Compare(CompilationUnitSyntax? x, CompilationUnitSyntax? y)
     {
         // nullの基本的な扱い

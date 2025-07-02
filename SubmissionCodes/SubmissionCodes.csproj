@@ -8,6 +8,10 @@
 	<LangVersion>11</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\ABCLib4cs\ABCLib4cs.csproj" />
   </ItemGroup>

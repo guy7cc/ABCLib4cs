@@ -1,0 +1,23 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Program" type="DotNetStaticMethod" factoryName=".NET Static Method">
+    <option name="EXE_PATH" value="C:\Users\Guy\AppData\Local\Programs\Rider\lib\ReSharperHost\JetLauncherILc.exe" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/SubmissionCodes/bin/Debug/net7.0" />
+    <option name="PASS_PARENT_ENVS" value="1" />
+    <option name="USE_EXTERNAL_CONSOLE" value="0" />
+    <option name="ENV_FILE_PATHS" value="" />
+    <option name="REDIRECT_INPUT_PATH" value="" />
+    <option name="PTY_MODE" value="Auto" />
+    <option name="USE_MONO" value="0" />
+    <option name="RUNTIME_ARGUMENTS" value="" />
+    <option name="AUTO_ATTACH_CHILDREN" value="0" />
+    <option name="MIXED_MODE_DEBUG" value="0" />
+    <option name="PROJECT_PATH" value="$PROJECT_DIR$/SubmissionCodes/SubmissionCodes.csproj" />
+    <option name="PROJECT_TFM" value="net7.0" />
+    <option name="CLASS_NAME" value="SubmissionCodes.Program" />
+    <option name="METHOD_NAME" value="Main" />
+    <method v="2">
+      <option name="Build" />
+    </method>
+  </configuration>
+</component>

@@ -1,22 +1,20 @@
-﻿using System;
-using ABCLib4cs;
-using ABCLib4cs.IO;
-using ABCLib4cs.Models;
-using static System.Console;
-using static System.Math;
-using static System.String;
+﻿using ABCLib4cs.Data.Struct;
+using static ABCLib4cs.IO.Scanner;
+using static ABCLib4cs.IO.Writer;
 
-namespace SubmissionCodes
+namespace SubmissionCodes;
+
+public class Program
 {
-    public class Program
+    public static void Main()
     {
-        static async Task Main(string[] args)
-        {
-            Class1 obj1 = new Class1();
-            object nestedObj = new Class1.NestedClass.InnerNestedClass();
-            var val = Class1.NestedClass.NestedConstant;
-            WriteLine(val);
-            var scanner = new StreamScanner(Console.OpenStandardOutput());
-        }
+        ABCLib4cs.IO.Writer.Setup();
+        Main2();
+        ABCLib4cs.IO.Writer.Dispose();
+    }
+
+    public static void Main2()
+    {
+        
     }
 }

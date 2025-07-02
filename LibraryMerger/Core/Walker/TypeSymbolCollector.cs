@@ -1,78 +1,74 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LibraryMerger.Core.Walker
+namespace LibraryMerger.Core.Walker;
+
+public class TypeSymbolCollector : CSharpSyntaxWalker
 {
-    public class TypeSymbolCollector : CSharpSyntaxWalker
+    private readonly List<ITypeSymbol> _collectedTypeSymbols = new();
+    private readonly SemanticModel _semanticModel;
+
+    public TypeSymbolCollector(SemanticModel semanticModel)
     {
-        private readonly SemanticModel _semanticModel;
-        private readonly List<ITypeSymbol> _collectedTypeSymbols = new List<ITypeSymbol>();
+        _semanticModel = semanticModel;
+    }
 
-        public IReadOnlyCollection<ITypeSymbol> CollectedTypeSymbols => _collectedTypeSymbols;
-        public TypeSymbolCollector(SemanticModel semanticModel)
+    public IReadOnlyCollection<ITypeSymbol> CollectedTypeSymbols => _collectedTypeSymbols;
+
+    private void HandleTypeSyntax(TypeSyntax node)
+    {
+        var symbolInfo = _semanticModel.GetSymbolInfo(node);
+        var symbol = symbolInfo.Symbol;
+
+        if (symbol is not ITypeSymbol typeSymbol) return;
+
+        HandleTypeSymbol(typeSymbol);
+    }
+
+    private void HandleTypeSymbol(ITypeSymbol? typeSymbol)
+    {
+        if (typeSymbol == null) return;
+
+        _collectedTypeSymbols.Add(typeSymbol);
+    }
+
+    public override void Visit(SyntaxNode? node)
+    {
+        if (node is ArrayTypeSyntax arrayTypeSyntax)
         {
-            _semanticModel = semanticModel;
+            HandleTypeSyntax(arrayTypeSyntax.ElementType);
         }
-
-        private void HandleTypeSyntax(TypeSyntax node)
+        else if (node is NullableTypeSyntax nullableTypeSyntax)
         {
-            var symbolInfo = _semanticModel.GetSymbolInfo(node);
-            var symbol = symbolInfo.Symbol;
-
-            if (symbol is not ITypeSymbol typeSymbol) return;
-
-            HandleTypeSymbol(typeSymbol);
+            HandleTypeSyntax(nullableTypeSyntax.ElementType);
         }
-
-        private void HandleTypeSymbol(ITypeSymbol? typeSymbol)
+        else if (node is PointerTypeSyntax pointerTypeSyntax)
         {
-            if (typeSymbol == null) return;
-
-            _collectedTypeSymbols.Add(typeSymbol);
-        }   
-
-        public override void Visit(SyntaxNode? node)
+            HandleTypeSyntax(pointerTypeSyntax.ElementType);
+        }
+        else if (node is PredefinedTypeSyntax predefinedTypeSyntax)
         {
-            if (node is ArrayTypeSyntax arrayTypeSyntax)
-            {
-                HandleTypeSyntax(arrayTypeSyntax.ElementType);
-            }
-            else if (node is NullableTypeSyntax nullableTypeSyntax)
-            {
-                HandleTypeSyntax(nullableTypeSyntax.ElementType);
-            }
-            else if (node is PointerTypeSyntax pointerTypeSyntax)
-            {
-                HandleTypeSyntax(pointerTypeSyntax.ElementType);
-            }
-            else if (node is PredefinedTypeSyntax predefinedTypeSyntax)
-            {
-                HandleTypeSyntax(predefinedTypeSyntax);
-            }
-            else if (node is QualifiedNameSyntax qualifiedNameSyntax)
-            {
-                HandleTypeSyntax(qualifiedNameSyntax.Right);
-            }
-            else if (node is GenericNameSyntax genericNameSyntax)
-            {
-                INamedTypeSymbol namedTypeSymbol = _semanticModel.GetSymbolInfo(genericNameSyntax).Symbol as INamedTypeSymbol;
+            HandleTypeSyntax(predefinedTypeSyntax);
+        }
+        else if (node is QualifiedNameSyntax qualifiedNameSyntax)
+        {
+            HandleTypeSyntax(qualifiedNameSyntax.Right);
+        }
+        else if (node is TypeSyntax && node is GenericNameSyntax genericNameSyntax)
+        {
+            var symbol = _semanticModel.GetSymbolInfo(genericNameSyntax).Symbol;
+            if (symbol is INamedTypeSymbol namedTypeSymbol)
                 HandleTypeSymbol(namedTypeSymbol.ConstructUnboundGenericType());
-                foreach(var typeArgument in genericNameSyntax.TypeArgumentList.Arguments)
-                {
-                    HandleTypeSyntax(typeArgument);
-                }
-            }
-            else if (node is TypeSyntax typeSyntax)
-            {
-                HandleTypeSyntax(typeSyntax);
-            }
-            base.Visit(node);
+            if (symbol.ContainingType != null)
+                HandleTypeSymbol(symbol.ContainingType);
+            foreach (var typeArgument in genericNameSyntax.TypeArgumentList.Arguments) HandleTypeSyntax(typeArgument);
         }
+        else if (node is TypeSyntax typeSyntax)
+        {
+            HandleTypeSyntax(typeSyntax);
+        }
+
+        base.Visit(node);
     }
 }

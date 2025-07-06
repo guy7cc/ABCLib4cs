@@ -36,6 +36,7 @@ public static class Writer
         {
             if (!first) _writer.Write(' ');
             _writer.Write(item);
+            first = false;
         }
 
         _writer.WriteLine();

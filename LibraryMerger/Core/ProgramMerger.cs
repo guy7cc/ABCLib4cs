@@ -62,8 +62,7 @@ public class ProgramMerger
             Console.WriteLine($"{mainClassFQN} was not found.");
             return null;
         }
-
-        var typeSymbols = new HashSet<ITypeSymbol>(SymbolEqualityComparer.Default);
+        
         foreach (var syntaxRef in syntaxTreeReferences)
         {
             var classDeclaration = await syntaxRef.GetSyntaxAsync();
@@ -91,7 +90,7 @@ public class ProgramMerger
         SyntaxNode root = queue.Dequeue();
         Console.WriteLine($"Merging {root.SyntaxTree.FilePath}");
 #if DEBUG
-        //SyntaxTreeVisualizer.Visualize(root);
+        SyntaxTreeVisualizer.Visualize(root);
 #endif
         // Collect type symbols
         var collector = new TypeSymbolCollector(_compilation.GetSemanticModel(root.SyntaxTree));

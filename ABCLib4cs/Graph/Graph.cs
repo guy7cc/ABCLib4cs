@@ -2,9 +2,8 @@
 
 public class Graph<VT, ET> where VT : Vertex where ET : Edge
 {
-    private readonly int _size;
-    public int Size => _size;
-    
+    public int Size { get; }
+
     public VT[] V { get; private set; }
 
     public List<ET>[] E { get; private set; }
@@ -13,7 +12,7 @@ public class Graph<VT, ET> where VT : Vertex where ET : Edge
     
     public Graph(int size)
     {
-        _size = size;
+        Size = size;
         V = new VT[size];
         E = new List<ET>[size];
         for (var i = 0; i < size; i++)

@@ -2,19 +2,22 @@
 
 public class FenwickTree
 {
-    private readonly int _size;
-    public int Size => _size;
+    public int Size { get; }
+
     private readonly long[] _tree;
     
     public FenwickTree(int size)
     {
-        _size = size;
+        Size = size;
         _tree = new long[size];
     }
 
+    /// <summary>
+    ///  Adds x to the element at index p.
+    /// </summary>
     public void Add(int p, long x)
     {
-        for (p++; p <= _size; p += p & -p){
+        for (p++; p <= Size; p += p & -p){
             _tree[p - 1] += x;
         }
     }

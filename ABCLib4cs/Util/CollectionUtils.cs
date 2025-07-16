@@ -2,31 +2,31 @@
 
 public static class CollectionUtils
 {
-    public static int LowerBound<T>(List<T> list, T key) where T : IComparable<T>
+    public static int GetMaxNotLessThanBound<T>(this List<T> list, T bound) where T : IComparable<T>
     {
-        int i = list.BinarySearch(key);
-        return i >= 0 ? i : ~i;
-    }
-
-    public static int LowerBound<T>(List<T> list, T key, Comparer<T> comparer)
-    {
-        int i = list.BinarySearch(key, comparer);
+        int i = list.BinarySearch(bound);
         return i >= 0 ? i : ~i;
     }
     
-    public static int UpperBound<T>(List<T> list, T key) where T : IComparable<T>
+    public static int GetMaxNotLessThanBound<T>(this List<T> list, T bound, Comparer<T> comparer)
     {
-        int i = list.BinarySearch(key);
-        return i >= 0 ? i + 1 : ~i;
+        int i = list.BinarySearch(bound, comparer);
+        return i >= 0 ? i : ~i;
     }
     
-    public static int UpperBound<T>(List<T> list, T key, Comparer<T> comparer)
+    public static int GetMinNotMoreThanBound<T>(this List<T> list, T bound) where T : IComparable<T>
     {
-        int i = list.BinarySearch(key, comparer);
-        return i >= 0 ? i + 1 : ~i;
+        int i = list.BinarySearch(bound);
+        return i >= 0 ? i : ~i - 1;
     }
     
-    public static List<int> CompressCoord<T>(IReadOnlyList<T> list) where T : IComparable<T>
+    public static int GetMinNotMoreThanBound<T>(this List<T> list, T bound, Comparer<T> comparer)
+    {
+        int i = list.BinarySearch(bound, comparer);
+        return i >= 0 ? i : ~i - 1;
+    }
+    
+    public static List<int> CompressCoord<T>(this IReadOnlyList<T> list) where T : IComparable<T>
     {
         var sorted = new List<T>(list);
         sorted.Sort();

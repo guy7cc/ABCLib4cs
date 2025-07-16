@@ -5,6 +5,7 @@
 
 using System.Globalization;
 using System.Text;
+using ABCLib4cs.Util;
 
 namespace ABCLib4cs.IO;
 
@@ -103,126 +104,82 @@ public static class Scanner
         throw new FormatException("Invalid boolean value: " + s);
     }
 
-    public static T ByType<T>()
+    public static (T0, T1) T<T0, T1>(Supplier<T0> sup0, Supplier<T1> sup1)
     {
-        var type = typeof(T);
-        switch (Type.GetTypeCode(typeof(T)))
-        {
-            case TypeCode.Char: return (T)(object)C();
-            case TypeCode.String: return (T)(object)S();
-            case TypeCode.Boolean: return (T)(object)B();
-            case TypeCode.Int32: return (T)(object)I();
-            case TypeCode.Int64: return (T)(object)L();
-            case TypeCode.Single: return (T)(object)F();
-            case TypeCode.Double: return (T)(object)D();
-            case TypeCode.Decimal: return (T)(object)Dec();
-            default:
-                throw new NotSupportedException(
-                    $"The type {type.Name} cannot be read directly. Use T<T0, T1>(...) for tuples.");
-        }
+        return (sup0(), sup1());
+    }
+    
+    public static (T0, T1, T2) T<T0, T1, T2>(Supplier<T0> sup0, Supplier<T1> sup1, Supplier<T2> sup2)
+    {
+        return (sup0(), sup1(), sup2());
+    }
+    
+    public static (T0, T1, T2, T3) T<T0, T1, T2, T3>(Supplier<T0> sup0, Supplier<T1> sup1, Supplier<T2> sup2, Supplier<T3> sup3)
+    {
+        return (sup0(), sup1(), sup2(), sup3());
     }
 
-    public static (T0, T1) T<T0, T1>()
-    {
-        return (ByType<T0>(), ByType<T1>());
-    }
-
-    public static (T0, T1, T2) T<T0, T1, T2>()
-    {
-        return (ByType<T0>(), ByType<T1>(), ByType<T2>());
-    }
-
-    public static (T0, T1, T2, T3) T<T0, T1, T2, T3>()
-    {
-        return (ByType<T0>(), ByType<T1>(), ByType<T2>(), ByType<T3>());
-    }
-
-    public static T0[] Arr<T0>(int size)
+    public static T0[] A<T0>(int size, Supplier<T0> sup0)
     {
         var arr = new T0[size];
-        for (var i = 0; i < size; i++) arr[i] = ByType<T0>();
+        for (var i = 0; i < size; i++) arr[i] = sup0();
 
         return arr;
     }
-
-    public static (T0[], T1[]) Arr<T0, T1>(int size)
+    
+    public static (T0, T1)[] A<T0, T1>(int size, Supplier<T0> sup0, Supplier<T1> sup1)
     {
-        var t0s = new T0[size];
-        var t1s = new T1[size];
-        for (var i = 0; i < size; i++)
-        {
-            t0s[i] = ByType<T0>();
-            t1s[i] = ByType<T1>();
-        }
+        var arr = new (T0, T1)[size];
+        for (var i = 0; i < size; i++) arr[i] = (sup0(), sup1());
 
-        return (t0s, t1s);
+        return arr;
     }
-
-    public static (T0[], T1[], T2[]) Arr<T0, T1, T2>(int size)
+    
+    public static (T0, T1, T2)[] A<T0, T1, T2>(int size, Supplier<T0> sup0, Supplier<T1> sup1, Supplier<T2> sup2)
     {
-        var t0s = new T0[size];
-        var t1s = new T1[size];
-        var t2s = new T2[size];
-        for (var i = 0; i < size; i++)
-        {
-            t0s[i] = ByType<T0>();
-            t1s[i] = ByType<T1>();
-            t2s[i] = ByType<T2>();
-        }
+        var arr = new (T0, T1, T2)[size];
+        for (var i = 0; i < size; i++) arr[i] = (sup0(), sup1(), sup2());
 
-        return (t0s, t1s, t2s);
+        return arr;
     }
-
-    public static (T0[], T1[], T2[], T3[]) Arr<T0, T1, T2, T3>(int size)
+    
+    public static (T0, T1, T2, T3)[] A<T0, T1, T2, T3>(int size, Supplier<T0> sup0, Supplier<T1> sup1, Supplier<T2> sup2, Supplier<T3> sup3)
     {
-        var t0s = new T0[size];
-        var t1s = new T1[size];
-        var t2s = new T2[size];
-        var t3s = new T3[size];
-        for (var i = 0; i < size; i++)
-        {
-            t0s[i] = ByType<T0>();
-            t1s[i] = ByType<T1>();
-            t2s[i] = ByType<T2>();
-            t3s[i] = ByType<T3>();
-        }
+        var arr = new (T0, T1, T2, T3)[size];
+        for (var i = 0; i < size; i++) arr[i] = (sup0(), sup1(), sup2(), sup3());
 
-        return (t0s, t1s, t2s, t3s);
+        return arr;
     }
-
-    public static void Collect<T0>(int size, ICollection<T0> t0s)
+    
+    public static List<T> L<T>(int size, Supplier<T> sup0)
     {
-        for (var i = 0; i < size; i++) t0s.Add(ByType<T0>());
+        var list = new List<T>(size);
+        for (var i = 0; i < size; i++) list.Add(sup0());
+
+        return list;
     }
-
-    public static void Collect<T0, T1>(int size, ICollection<T0> t0s, ICollection<T1> t1s)
+    
+    public static List<(T0, T1)> L<T0, T1>(int size, Supplier<T0> sup0, Supplier<T1> sup1)
     {
-        for (var i = 0; i < size; i++)
-        {
-            t0s.Add(ByType<T0>());
-            t1s.Add(ByType<T1>());
-        }
+        var list = new List<(T0, T1)>(size);
+        for (var i = 0; i < size; i++) list.Add((sup0(), sup1()));
+
+        return list;
     }
-
-    public static void Collect<T0, T1, T2>(int size, ICollection<T0> t0s, ICollection<T1> t1s, ICollection<T2> t2s)
+    
+    public static List<(T0, T1, T2)> L<T0, T1, T2>(int size, Supplier<T0> sup0, Supplier<T1> sup1, Supplier<T2> sup2)
     {
-        for (var i = 0; i < size; i++)
-        {
-            t0s.Add(ByType<T0>());
-            t1s.Add(ByType<T1>());
-            t2s.Add(ByType<T2>());
-        }
+        var list = new List<(T0, T1, T2)>(size);
+        for (var i = 0; i < size; i++) list.Add((sup0(), sup1(), sup2()));
+
+        return list;
     }
-
-    public static void Collect<T0, T1, T2, T3>(int size, ICollection<T0> t0s, ICollection<T1> t1s, ICollection<T2> t2s,
-        ICollection<T3> t3s)
+    
+    public static List<(T0, T1, T2, T3)> L<T0, T1, T2, T3>(int size, Supplier<T0> sup0, Supplier<T1> sup1, Supplier<T2> sup2, Supplier<T3> sup3)
     {
-        for (var i = 0; i < size; i++)
-        {
-            t0s.Add(ByType<T0>());
-            t1s.Add(ByType<T1>());
-            t2s.Add(ByType<T2>());
-            t3s.Add(ByType<T3>());
-        }
+        var list = new List<(T0, T1, T2, T3)>(size);
+        for (var i = 0; i < size; i++) list.Add((sup0(), sup1(), sup2(), sup3()));
+
+        return list;
     }
 }

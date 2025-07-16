@@ -84,8 +84,8 @@ public static class StaticRectangleSum
         for (int i = 0; i < q; i++)
         {
             var currentQuery = queries[i];
-            currentQuery.D = CollectionUtils.LowerBound(yCoords, currentQuery.D);
-            currentQuery.U = CollectionUtils.LowerBound(yCoords, currentQuery.U);
+            currentQuery.D = CollectionUtils.GetMaxNotLessThanBound(yCoords, currentQuery.D);
+            currentQuery.U = CollectionUtils.GetMaxNotLessThanBound(yCoords, currentQuery.U);
             queryEvents.Add((currentQuery.L, i));
             queryEvents.Add((currentQuery.R, i + q));
         }
@@ -138,8 +138,8 @@ public static class StaticRectangleSum
         for (int i = 0; i < rectCount; i++)
         {
             var rect = rectangles[i];
-            rect.D = CollectionUtils.LowerBound(ys, rect.D);
-            rect.U = CollectionUtils.LowerBound(ys, rect.U);
+            rect.D = CollectionUtils.GetMaxNotLessThanBound(ys, rect.D);
+            rect.U = CollectionUtils.GetMaxNotLessThanBound(ys, rect.U);
             rectangleEvents.Add((rect.L, i));
             rectangleEvents.Add((rect.R, i + rectCount));
         }
@@ -151,8 +151,8 @@ public static class StaticRectangleSum
         for (int i = 0; i < queryCount; i++)
         {
             var q = qs[i];
-            qdis[i] = CollectionUtils.LowerBound(ys, q.D);
-            quis[i] = CollectionUtils.LowerBound(ys, q.U);
+            qdis[i] = CollectionUtils.GetMaxNotLessThanBound(ys, q.D);
+            quis[i] = CollectionUtils.GetMaxNotLessThanBound(ys, q.U);
             queryEvents.Add((q.L, i));
             queryEvents.Add((q.R, i + queryCount));
         }

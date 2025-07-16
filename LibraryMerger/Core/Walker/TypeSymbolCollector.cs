@@ -38,6 +38,7 @@ public class TypeSymbolCollector : CSharpSyntaxWalker
         if (node is ArrayTypeSyntax arrayTypeSyntax)
         {
             HandleTypeSyntax(arrayTypeSyntax.ElementType);
+            base.Visit(node);
         }
         else if (node is NullableTypeSyntax nullableTypeSyntax)
         {
@@ -69,6 +70,30 @@ public class TypeSymbolCollector : CSharpSyntaxWalker
             HandleTypeSyntax(typeSyntax);
         }
 
+        TryHandleExtensionMethod(node);
+
         base.Visit(node);
+    }
+
+    public void TryHandleExtensionMethod(SyntaxNode? node)
+    {
+        if (node == null) return;
+        
+        if (node is not IdentifierNameSyntax identifierNameSyntax)
+        {
+            return;
+        }
+        var symbolInfo = _semanticModel.GetSymbolInfo(identifierNameSyntax);
+        if (symbolInfo.Symbol is IMethodSymbol methodSymbol && methodSymbol.IsExtensionMethod)
+        {
+            HandleTypeSymbol(methodSymbol.ContainingType);
+        } 
+        foreach(var candidate in symbolInfo.CandidateSymbols)
+        {
+            if (candidate is IMethodSymbol candidateMethod && candidateMethod.IsExtensionMethod)
+            {
+                HandleTypeSymbol(candidateMethod.ContainingType);
+            }
+        }
     }
 }

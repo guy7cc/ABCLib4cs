@@ -2,12 +2,10 @@ namespace ABCLib4cs.Algorithm;
 
 public class Doubling
 {
-    private IReadOnlyList<int> _dest;
-    private int[][] _dp;
+    private readonly int[][] _dp;
     
     public Doubling(IReadOnlyList<int> destinations, long maxMove)
     {
-        _dest = destinations;
         int logK = 1;
         while (maxMove > 1)
         {
@@ -16,16 +14,16 @@ public class Doubling
         }
 
         _dp = new int[logK][];
-        for (int i = 0; i < logK; i++) _dp[i] = new int[_dest.Count];
+        for (int i = 0; i < logK; i++) _dp[i] = new int[destinations.Count];
 
-        for (int j = 0; j < _dest.Count; j++)
+        for (int j = 0; j < destinations.Count; j++)
         {
-            _dp[0][j] = _dest[j];
+            _dp[0][j] = destinations[j];
         }
 
         for (int i = 1; i < logK; i++)
         {
-            for (int j = 0; j < _dest.Count; j++)
+            for (int j = 0; j < destinations.Count; j++)
             {
                 _dp[i][j] = _dp[i - 1][_dp[i - 1][j]];
             }

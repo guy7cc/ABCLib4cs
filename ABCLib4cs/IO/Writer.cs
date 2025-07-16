@@ -23,6 +23,11 @@ public static class Writer
             _writer.Write(item);
         }
     }
+    
+    public static void WL()
+    {
+        _writer.WriteLine();
+    }
 
     public static void WL(object o)
     {

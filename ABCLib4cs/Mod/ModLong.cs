@@ -2,63 +2,51 @@
 
 namespace ABCLib4cs.Mod;
 
-/// <summary>
-/// Represents a modular integer (residue class) for a given modulus.
-/// This struct is immutable.
-/// </summary>
 public readonly struct ModLong : IEquatable<ModLong>, IComparable<ModLong>, IComparable
 {
-    /// <summary>
-    /// The modulus used for calculations. Defaults to 998244353.
-    /// </summary>
     public static long Mod { get; set; } = Const.Mod998244353;
-
-    /// <summary>
-    /// The integer value, which is between 0 and Mod-1.
-    /// </summary>
+    
     public readonly long Value;
 
     private ModLong(long value)
     {
         Value = ModValue(value);
     }
-
-    /// <summary>
-    /// Creates an instance of ModLong from a long value.
-    /// </summary>
-    /// <param name="value">The original value.</param>
-    /// <returns>The created ModLong instance.</returns>
+    
     public static ModLong Of(long value)
     {
         return new ModLong(value);
     }
-
-    /// <summary>
-    /// Converts a value to its positive remainder modulo Mod.
-    /// </summary>
+    
     private static long ModValue(long value)
     {
         long r = value % Mod;
         return r < 0 ? r + Mod : r;
     }
 
+    private static long ModValue(long value, long mod)
+    {
+        long r = value % mod;
+        return r < 0 ? r + mod : r;
+    }
+
     #region Arithmetic Operators
 
     public static ModLong operator +(ModLong a, ModLong b) => new(a.Value + b.Value);
-    public static ModLong operator +(ModLong a, long b) => new(a.Value + b);
-    public static ModLong operator +(long a, ModLong b) => new(a + b.Value);
+    public static ModLong operator +(ModLong a, long b) => new(a.Value + ModValue(b));
+    public static ModLong operator +(long a, ModLong b) => new(ModValue(a) + b.Value);
 
     public static ModLong operator -(ModLong a, ModLong b) => new(a.Value - b.Value);
-    public static ModLong operator -(ModLong a, long b) => new(a.Value - b);
-    public static ModLong operator -(long a, ModLong b) => new(a - b.Value);
+    public static ModLong operator -(ModLong a, long b) => new(a.Value - ModValue(b));
+    public static ModLong operator -(long a, ModLong b) => new(ModValue(a) - b.Value);
 
     public static ModLong operator *(ModLong a, ModLong b) => new(a.Value * b.Value);
-    public static ModLong operator *(ModLong a, long b) => new(a.Value * b);
-    public static ModLong operator *(long a, ModLong b) => new(a * b.Value);
+    public static ModLong operator *(ModLong a, long b) => new(a.Value * ModValue(b));
+    public static ModLong operator *(long a, ModLong b) => new(ModValue(a) * b.Value);
 
-    public static ModLong operator /(ModLong a, ModLong b) => new(a.Value * Inv(b.Value));
-    public static ModLong operator /(ModLong a, long b) => new(a.Value * Inv(b));
-    public static ModLong operator /(long a, ModLong b) => new(a * Inv(b.Value));
+    public static ModLong operator /(ModLong a, ModLong b) => new(a.Value * Inv(b.Value, Mod));
+    public static ModLong operator /(ModLong a, long b) => new(a.Value * Inv(b, Mod));
+    public static ModLong operator /(long a, ModLong b) => new(ModValue(a) * Inv(b.Value, Mod));
 
     public static ModLong operator +(ModLong a) => a;
     public static ModLong operator -(ModLong a) => new(-a.Value);
@@ -84,25 +72,18 @@ public readonly struct ModLong : IEquatable<ModLong>, IComparable<ModLong>, ICom
     #endregion
     
     #region Comparison
-
-    /// <summary>
-    /// Compares this instance to another ModLong object and returns an integer that indicates their relative values.
-    /// </summary>
+    
     public int CompareTo(ModLong other)
     {
         return Value.CompareTo(other.Value);
     }
-
-    /// <summary>
-    /// Compares this instance to a specified object and returns an integer that indicates their relative values.
-    /// </summary>
+    
     public int CompareTo(object obj)
     {
         if (obj is ModLong other)
         {
             return CompareTo(other);
         }
-        // Throw an exception because it cannot be compared with other types.
         throw new ArgumentException($"Object must be of type {nameof(ModLong)}");
     }
 
@@ -113,14 +94,11 @@ public readonly struct ModLong : IEquatable<ModLong>, IComparable<ModLong>, ICom
 
     #endregion
     
-    /// <summary>
-    /// Calculates the modular multiplicative inverse using the extended Euclidean algorithm.
-    /// </summary>
-    public static long Inv(long a)
+    public static long Inv(long a, long mod)
     {
-        long b = Mod, u = 1, v = 0;
+        long b = mod, u = 1, v = 0;
         long tmp;
-        a = ModValue(a);
+        a = ModValue(a, mod);
 
         while (b > 0)
         {
@@ -131,9 +109,25 @@ public readonly struct ModLong : IEquatable<ModLong>, IComparable<ModLong>, ICom
             tmp = u; u = v; v = tmp;
         }
         
-        u %= Mod;
-        if (u < 0) u += Mod;
+        u %= mod;
+        if (u < 0) u += mod;
         return u;
+    }
+
+    public ModLong Exp(long exp)
+    {
+        var result = Of(1);
+        var baseValue = this;
+        while (exp > 0)
+        {
+            if ((exp & 1) == 1)
+            {
+                result *= baseValue;
+            }
+            baseValue *= baseValue;
+            exp >>= 1;
+        }
+        return result;
     }
 
     public override string ToString() => Value.ToString();

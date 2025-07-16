@@ -10,7 +10,7 @@ internal class Program
         var mergedFileName = args.Length >= 2 ? args[1] : "ProgramMerged";
         var merger = new ProgramMerger();
         var cu = await merger.MergeLibrariesFor(startupClass);
-        await File.WriteAllTextAsync(@"..\..\..\..\SubmissionCodes\" + mergedFileName + ".txt", cu.ToFullString());
+        await File.WriteAllTextAsync(@"..\..\..\..\SubmissionCodes\" + mergedFileName + ".txt", cu.NormalizeWhitespace("    ", "\n", true).ToFullString());
         await File.WriteAllTextAsync(@"..\..\..\..\SubmissionCodes\" + mergedFileName + ".min.txt", cu.NormalizeWhitespace("", "", true).ToFullString());
     }
 }

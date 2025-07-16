@@ -79,8 +79,11 @@ public class ProgramMerger
             .WithMembers(_members)
             .NormalizeWhitespace();
         root = NamespaceMerger.RefactorAndMergeNamespaces(root);
-        Console.WriteLine(
-            $"Merged {root.Members.Count} members, {root.Usings.Count} usings, and {root.Externs.Count} extern aliases.");
+        Console.WriteLine($"Merged {cuset.Count} following units:");
+        foreach (var cu in cuset)
+        {
+            Console.WriteLine(cu.SyntaxTree.FilePath);
+        }
         return root;
     }
 
@@ -89,9 +92,9 @@ public class ProgramMerger
         if (queue.Count == 0) return;
         SyntaxNode root = queue.Dequeue();
         Console.WriteLine($"Merging {root.SyntaxTree.FilePath}");
-#if DEBUG
-        SyntaxTreeVisualizer.Visualize(root);
-#endif
+
+        //SyntaxTreeVisualizer.Visualize(root);
+
         // Collect type symbols
         var collector = new TypeSymbolCollector(_compilation.GetSemanticModel(root.SyntaxTree));
         ApplyWalker(root, collector);

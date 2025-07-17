@@ -1,4 +1,7 @@
-﻿namespace ABCLib4cs.Mod;
+﻿using ABCLib4cs.Util;
+using Microsoft.VisualBasic;
+
+namespace ABCLib4cs.Mod;
 
 /// <summary>
 /// 剰余乗算における組み合わせの計算を提供します。
@@ -12,7 +15,7 @@ public class ModCombination
     /// <summary>
     /// 計算に使用する法。
     /// </summary>
-    public const long Mod = 998244353;
+    public static long Mod { get; set; } = Const.Mod998244353;
 
     /// <summary>
     /// 前計算された階乗の最大範囲を取得します。

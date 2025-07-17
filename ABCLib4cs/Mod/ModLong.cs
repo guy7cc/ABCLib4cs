@@ -130,5 +130,31 @@ public readonly struct ModLong : IEquatable<ModLong>, IComparable<ModLong>, ICom
         return result;
     }
 
+    public static long Log(ModLong a, ModLong b)
+    {
+        var q = (long) Mazz.SqrtCeiling((ulong)Mod);
+        var babySteps = new SortedDictionary<ModLong, long>();
+        var right = b;
+        for (long i = 0; i < q; i++)
+        {
+            babySteps.TryAdd(right, i);
+            right /= a;
+        }
+
+        var giantStep = a.Exp(q);
+        var left = ModLong.Of(1);
+        for (int i = 0; i < q; i++)
+        {
+            if (babySteps.TryGetValue(left, out long j))
+            {
+                return i * q + j;
+            }
+
+            left *= giantStep;
+        }
+
+        return -1;
+    }
+
     public override string ToString() => Value.ToString();
 }

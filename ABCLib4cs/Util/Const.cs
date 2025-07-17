@@ -2,5 +2,5 @@
 
 public static class Const
 {
-    public static readonly int Mod998244353 = 998244353;
+    public const long Mod998244353 = 998244353;
 }

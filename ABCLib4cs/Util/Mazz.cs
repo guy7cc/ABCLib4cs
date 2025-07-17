@@ -19,8 +19,15 @@ public static class Mazz
     public static ulong SqrtFloor(ulong n)
     {
         if (n == 0) return 0; 
-        ulong t = (ulong)Math.Sqrt(n) - 1;
-        return t * (t + 2) < n ? t + 1 : t;
+        ulong t = (ulong)Math.Sqrt(n);
+        return (t - 1) * (t + 1) < n ? t : t - 1;
+    }
+
+    public static ulong SqrtCeiling(ulong n)
+    {
+        if (n == 0) return 0;
+        ulong t = (ulong)Math.Sqrt(n);
+        return (t - 1) * (t + 1) < n - 1 ? t + 1 : t;
     }
     
     public static long GCD(long a, long b)
